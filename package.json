@@ -4,7 +4,7 @@
   "description": "使用AI自动生成Git提交信息，支持DeepSeek、OpenAI和阿里云通义千问模型",
   "main": "dist/index.js",
   "bin": {
-    "gitaicommit": "dist/cli.js"
+    "gitaicommits": "dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
