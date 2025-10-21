@@ -38,10 +38,11 @@ export class OpenAIModel implements AIModel {
 // DeepSeek模型实现
 export class DeepSeekModel implements AIModel {
   async generateCommitMessage(diff: string, config: Config): Promise<string> {
+    // 使用最新的DeepSeek API端点和模型配置
     const response = await axios.post(
-      'https://api.deepseek.com/v1/chat/completions',
+      'https://api.deepseek.com/chat/completions',
       {
-        model: config.modelName || 'deepseek-chat',
+        model: config.modelName || 'deepseek-coder',
         messages: [
           {
             role: 'system',
