@@ -1,5 +1,5 @@
 {
-  "name": "gitaicommit",
+  "name": "gitaicommits",
   "version": "1.0.0",
   "description": "使用AI自动生成Git提交信息，支持DeepSeek、OpenAI和阿里云通义千问模型",
   "main": "dist/index.js",
@@ -25,9 +25,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SixColorommit.git"
+    "url": "git+https://github.com/SixColor/gitaicommits.git"
   },
-  "homepage": "https://github.com/SixColor/gitaicommit#readme",
+  "homepage": "https://github.com/SixColor/gitaicommits#readme",
   "dependencies": {
     "axios": "^1.6.0",
     "commander": "^11.1.0",

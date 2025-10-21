@@ -1,13 +1,13 @@
-# GitAICommit
+# GitAICommits
 
 <p align="center">
   <strong>使用AI自动生成Git提交信息的命令行工具</strong>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/npm/v/gitaicommit" alt="npm version">
-  <img src="https://img.shields.io/npm/l/gitaicommit" alt="license">
-  <img src="https://img.shields.io/npm/dt/gitaicommit" alt="downloads">
+  <img src="https://img.shields.io/npm/v/gitaicommits" alt="npm version">
+  <img src="https://img.shields.io/npm/l/gitaicommits" alt="license">
+  <img src="https://img.shields.io/npm/dt/gitaicommits" alt="downloads">
 </p>
 
 ## 📖 简介
@@ -27,10 +27,10 @@ GitAICommit 是一个智能的Git提交信息生成工具，利用AI模型自动
 
 ```bash
 # 全局安装
-npm install -g gitaicommit
+npm install -g gitaicommits
 
 # 或在项目中安装
-npm install --save-dev gitaicommit
+npm install --save-dev gitaicommits
 ```
 
 ## ⚙️ 配置
@@ -39,19 +39,19 @@ npm install --save-dev gitaicommit
 
 ```bash
 # 设置API密钥（以OpenAI为例）
-gitaicommit config --api-key sk-your-api-key
+gitaicommits config --api-key sk-your-api-key
 
 # 设置模型类型
-gitaicommit config --model openai
+gitaicommits config --model openai
 
 # 设置模型名称
-gitaicommit config --model-name gpt-3.5-turbo
+gitaicommits config --model-name gpt-3.5-turbo
 
 # 设置语言（中文/英文）
-gitaicommit config --language zh
+gitaicommits config --language zh
 
 # 查看当前配置
-gitaicommit config --show
+gitaicommits config --show
 ```
 
 ### 支持的配置项
@@ -73,10 +73,10 @@ gitaicommit config --show
 
 ```bash
 # 简单方式
-gitaicommit
+gitaicommits
 
 # 或使用命令
-gitaicommit generate
+gitaicommits generate
 ```
 
 工具会自动分析更改并生成提交信息，显示在终端中，然后需要手动复制使用。
@@ -85,23 +85,23 @@ gitaicommit generate
 
 ```bash
 # 使用commit命令
-gitaicommit commit
+gitaicommits commit
 
 # 或使用generate命令加参数
-gitaicommit generate --commit
+gitaicommits generate --commit
 ```
 
 ### 3. 示例
 
 ```bash
 # 配置OpenAI模型
-gitaicommit config --api-key sk-123456 --model openai --model-name gpt-4
+gitaicommits config --api-key sk-123456 --model openai --model-name gpt-4
 
 # 查看配置
-gitaicommit config --show
+gitaicommits config --show
 
 # 生成并提交信息
-gitaicommit commit
+gitaicommits commit
 ```
 
 ## 🛠️ 模型支持
