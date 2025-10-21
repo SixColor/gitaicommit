@@ -1,0 +1,43 @@
+{
+  "name": "gitaicommit",
+  "version": "1.0.0",
+  "description": "使用AI自动生成Git提交信息，支持DeepSeek、OpenAI和阿里云通义千问模型",
+  "main": "dist/index.js",
+  "bin": {
+    "gitaicommit": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "git",
+    "commit",
+    "ai",
+    "openai",
+    "deepseek",
+    "qwen",
+    "automation"
+  ],
+  "author": "SixColor",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SixColorommit.git"
+  },
+  "homepage": "https://github.com/SixColor/gitaicommit#readme",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "commander": "^11.1.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.9.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
+  }
+}
