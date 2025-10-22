@@ -56,10 +56,11 @@ program
   .alias('g')
   .description('生成提交信息')
   .option('-c, --commit', '自动执行git commit')
+  .option('-i, --check-issues', '同时检查并显示代码潜在问题')
   .action(async (options) => {
     try {
       const gitAICommit = new GitAICommit();
-      await gitAICommit.generateAndCommit(options.commit);
+      await gitAICommit.generateAndCommit(options.commit, options.checkIssues);
     } catch (error) {
       const currentLanguage = ConfigManager.readConfig().language;
       const errorMsg = currentLanguage === 'zh' ? '❌ 操作失败:' : '❌ Operation failed:';
@@ -73,10 +74,28 @@ program
   .command('commit')
   .alias('c')
   .description('生成并提交信息')
+  .option('-i, --check-issues', '同时检查并显示代码潜在问题')
+  .action(async (options) => {
+    try {
+      const gitAICommit = new GitAICommit();
+      await gitAICommit.generateAndCommit(true, options.checkIssues);
+    } catch (error) {
+      const currentLanguage = ConfigManager.readConfig().language;
+      const errorMsg = currentLanguage === 'zh' ? '❌ 操作失败:' : '❌ Operation failed:';
+      console.error(errorMsg, error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  });
+
+// 代码问题检查命令
+program
+  .command('check')
+  .alias('i')
+  .description('使用AI检查本次提交代码的潜在问题')
   .action(async () => {
     try {
       const gitAICommit = new GitAICommit();
-      await gitAICommit.generateAndCommit(true);
+      await gitAICommit.checkCodeIssues();
     } catch (error) {
       const currentLanguage = ConfigManager.readConfig().language;
       const errorMsg = currentLanguage === 'zh' ? '❌ 操作失败:' : '❌ Operation failed:';
@@ -90,7 +109,7 @@ program
   .action(async () => {
     try {
       const gitAICommit = new GitAICommit();
-      await gitAICommit.generateAndCommit(false);
+      await gitAICommit.generateAndCommit(false, false);
     } catch (error) {
       const currentLanguage = ConfigManager.readConfig().language;
       const errorMsg = currentLanguage === 'zh' ? '❌ 操作失败:' : '❌ Operation failed:';

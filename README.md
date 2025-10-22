@@ -113,8 +113,8 @@ gitaicommits commit
 
 ### DeepSeek
 
-- 支持模型：deepseek-chat 等
-- API端点：https://api.deepseek.com/v1/chat/completions
+- 支持模型：deepseek-coder 等
+- API端点：https://api.deepseek.com/chat/completions
 
 ### 阿里云通义千问
 
@@ -129,6 +129,20 @@ gitaicommits commit
 ## 🤝 贡献
 
 欢迎提交Issue和Pull Request！
+
+## 📋 开发计划 (TODO)
+
+### 近期计划
+- [ ] **代码问题自动识别**：分析提交的代码变更，自动识别潜在的bug、安全漏洞和性能问题
+- [ ] **改进代码问题识别算法**：提高代码问题检测的准确性和覆盖面
+- [ ] **支持更多编程语言**：扩展对各种编程语言的问题识别支持
+- [ ] **提供问题修复建议**：不仅识别问题，还提供相应的修复建议
+
+### 未来功能
+- [ ] 集成单元测试覆盖率分析
+- [ ] 支持团队协作和代码审查功能
+- [ ] 添加用户自定义规则支持
+- [ ] 提供代码质量趋势分析报告
 
 ## 📄 许可证
 

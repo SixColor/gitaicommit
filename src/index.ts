@@ -20,7 +20,7 @@ export class GitAICommit {
   /**
    * 生成并提交Git提交信息
    */
-  async generateAndCommit(autoCommit: boolean = false): Promise<string> {
+  async generateAndCommit(autoCommit: boolean = false, checkIssues: boolean = false): Promise<string> {
     // 创建交互式命令行接口
     const rl = readline.createInterface({
       input: process.stdin,
@@ -40,6 +40,7 @@ export class GitAICommit {
         notInGitRepo: '错误: 不在Git仓库中，请在Git仓库目录下运行',
         getDiff: '🔍 获取Git差异信息...',
         noChanges: '没有检测到未提交的更改',
+        checkIssues: `🔍 使用 ${this.config.model} 模型检查代码问题...`,
         generateMessage: `🤖 使用 ${this.config.model} 模型生成提交信息...`,
         generatedMessage: '\n📝 生成的提交信息:',
         error: '❌ 生成提交信息失败:',
@@ -54,6 +55,7 @@ export class GitAICommit {
         notInGitRepo: 'Error: Not in a Git repository, please run in a Git repository directory',
         getDiff: '🔍 Getting Git diff information...',
         noChanges: 'No uncommitted changes detected',
+        checkIssues: `🔍 Checking code issues using ${this.config.model} model...`,
         generateMessage: `🤖 Generating commit message using ${this.config.model} model...`,
         generatedMessage: '\n📝 Generated commit message:',
         error: '❌ Failed to generate commit message:',
@@ -94,6 +96,16 @@ export class GitAICommit {
     let shouldCommit = false;
     
     try {
+      // 如果需要检查代码问题
+      if (checkIssues) {
+        console.log(msg.checkIssues || `🔍 使用 ${this.config.model} 模型检查代码问题...`);
+        await this.checkCodeIssues();
+        // 添加明显的分隔符，区分问题分析和提交信息
+        console.log('\n==================================================');
+        console.log('                    提交信息                      ');
+        console.log('==================================================\n');
+      }
+
       // 循环直到用户确认或取消
       while (true) {
         console.log(msg.generateMessage);
@@ -146,6 +158,66 @@ export class GitAICommit {
     ConfigManager.saveConfig(newConfig);
     this.config = { ...this.config, ...newConfig };
     this.model = createModel(this.config.model);
+  }
+
+  /**
+   * 检查代码中的潜在问题
+   */
+  async checkCodeIssues(): Promise<string> {
+    // 多语言消息对象
+    const messages = {
+      zh: {
+        invalidConfig: '配置无效',
+        notInGitRepo: '错误: 不在Git仓库中，请在Git仓库目录下运行',
+        noChanges: '没有检测到未提交的更改',
+        error: '❌ 检查代码问题失败:'
+      },
+      en: {
+        invalidConfig: 'Invalid configuration',
+        notInGitRepo: 'Error: Not in a Git repository, please run in a Git repository directory',
+        noChanges: 'No uncommitted changes detected',
+        error: '❌ Failed to check code issues:'
+      }
+    };
+
+    const msg = messages[this.config.language];
+
+    // 验证配置
+    if (!ConfigManager.validateConfig(this.config)) {
+      throw new Error(msg.invalidConfig);
+    }
+
+    // 检查是否在Git仓库中
+    if (!GitUtils.isInGitRepository()) {
+      throw new Error(msg.notInGitRepo);
+    }
+
+    // 获取Git差异
+    // 注意：这里不再输出日志，因为在generateAndCommit中已经输出了
+    const diff = GitUtils.getDetailedDiff(this.config.language);
+    
+    if (!diff.trim()) {
+      throw new Error(msg.noChanges);
+    }
+
+    // 注意：不再解析和显示差异摘要，因为在generateAndCommit中已经显示了
+
+    // 检查代码问题
+      try {
+        // 直接使用固定的日志消息，不再依赖msg对象
+        console.log(`🔍 分析代码潜在问题...`);
+        const issues = await this.model.checkCodeIssues(diff, this.config);
+      
+      console.log('\n🔍 代码问题分析结果:');
+      console.log('-------------------');
+      console.log(issues);
+      console.log('-------------------\n');
+
+      return issues;
+    } catch (error) {
+      console.error(msg.error, error instanceof Error ? error.message : String(error));
+      throw error;
+    }
   }
 
   /**

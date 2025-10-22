@@ -11,6 +11,7 @@ export interface Config {
 // AI模型接口
 export interface AIModel {
   generateCommitMessage(diff: string, config: Config): Promise<string>;
+  checkCodeIssues(diff: string, config: Config): Promise<string>;
 }
 
 // Git差异信息
