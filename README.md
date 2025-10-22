@@ -31,6 +31,7 @@ GitAICommit 是一个智能的Git提交信息生成工具，利用AI模型自动
 - 可选择自动执行git commit
 - **代码问题自动识别**：分析代码变更中的潜在问题
 - **提交时集成问题检查**：可选择在生成提交信息时同时分析代码问题
+- **支持指定文件分析和提交**：可精确控制要分析和提交的文件范围
 
 ## 🚀 安装 [中文]
 
@@ -126,7 +127,26 @@ gitaicommits commit --check-issues
 gitaicommits c -i
 ```
 
-### 5. 示例
+### 5. 指定文件分析和提交
+
+```bash
+# 只分析和提交特定文件
+gitaicommits commit src/index.ts src/git.ts
+
+# 只分析特定文件的问题
+gitaicommits check src/cli.ts
+
+# 生成提交信息，但只基于特定文件
+gitaicommits generate src/utils.ts
+
+# 生成提交信息并检查代码问题，只针对特定文件
+gitaicommits generate --check-issues src/index.ts
+
+# 生成并提交，同时检查代码问题，只针对特定文件
+gitaicommits commit --check-issues src/models/index.ts
+```
+
+### 6. 示例
 
 ```bash
 # 配置OpenAI模型
@@ -146,6 +166,9 @@ gitaicommits generate --check-issues
 
 # 仅检查代码问题
 gitaicommits check
+
+# 只提交特定文件的更改
+gitaicommits commit src/index.ts src/git.ts
 ```
 
 ## 🛠️ 模型支持 [中文]
@@ -179,6 +202,7 @@ gitaicommits check
 ### 近期计划
 - [x] **代码问题自动识别**：分析提交的代码变更，自动识别潜在的bug、安全漏洞和性能问题 ✅
 - [x] **提交时集成问题检查**：在生成提交信息时可选择同时分析代码问题 ✅
+- [x] **支持指定文件分析和提交**：可精确控制要分析和提交的文件范围 ✅
 - [ ] **改进代码问题识别算法**：提高代码问题检测的准确性和覆盖面
 - [ ] **支持更多编程语言**：扩展对各种编程语言的问题识别支持
 - [ ] **提供问题修复建议**：不仅识别问题，还提供相应的修复建议
@@ -252,6 +276,18 @@ gitaicommits config --show
 | maxTokens | Maximum token count | 200 | - |
 | language | Language | zh | zh, en |
 
+## ✨ Features [English]
+
+- Support for multiple AI models: OpenAI GPT, DeepSeek, Alibaba Tongyi Qianwen
+- Automatic analysis of Git change content
+- Generate standardized commit messages
+- Command-line configuration and usage
+- Support for Chinese and English output
+- Optional automatic git commit execution
+- **Automatic code issue identification**: Analyze potential issues in code changes
+- **Integrated issue checking during commit**: Option to analyze code issues while generating commit messages
+- **Support for analyzing and committing specific files**: Precisely control the file range for analysis and commit
+
 ## 📝 Usage [English]
 
 ### 1. Generate commit message (without auto commit)
@@ -304,11 +340,33 @@ gitaicommits commit --check-issues
 gitaicommits c -i
 ```
 
-### 5. Examples
+### 5. Analyze and Commit Specific Files
+
+```bash
+# Only analyze and commit specific files
+gitaicommits commit src/index.ts src/git.ts
+
+# Only analyze issues in specific files
+gitaicommits check src/cli.ts
+
+# Generate commit message based only on specific files
+gitaicommits generate src/utils.ts
+
+# Generate commit message and check code issues for specific files
+gitaicommits generate --check-issues src/index.ts
+
+# Generate, commit, and check code issues for specific files
+gitaicommits commit --check-issues src/models/index.ts
+```
+
+### 6. Examples
 
 ```bash
 # Configure OpenAI model
 gitaicommits config --api-key sk-123456 --model openai --model-name gpt-4
+
+# Configure DeepSeek model
+gitaicommits config --api-key sk-123456 --model deepseek --model-name deepseek-chat
 
 # View configuration
 gitaicommits config --show
@@ -321,6 +379,9 @@ gitaicommits generate --check-issues
 
 # Only check code issues
 gitaicommits check
+
+# Only commit changes in specific files
+gitaicommits commit src/index.ts src/git.ts
 ```
 
 ## 🛠️ Model Support [English]

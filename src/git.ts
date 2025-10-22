@@ -8,7 +8,7 @@ export class GitUtils {
   /**
    * 获取当前未提交的更改差异
    */
-  static getDiff(language: 'zh' | 'en' = 'zh'): string {
+  static getDiff(language: 'zh' | 'en' = 'zh', files?: string[]): string {
     const messages = {
       zh: {
         errorLog: '获取Git差异信息失败:',
@@ -23,12 +23,25 @@ export class GitUtils {
     const msg = messages[language];
     
     try {
-      // 获取所有未暂存和已暂存但未提交的更改
-      const diff = execSync('git diff --cached --name-status HEAD', { encoding: 'utf-8' });
+      // 构建命令，支持指定文件
+      const baseCmd = 'git diff --name-status';
+      const cachedCmd = 'git diff --cached --name-status HEAD';
+      let cmd = cachedCmd;
+      
+      if (files && files.length > 0) {
+        cmd += ' -- ' + files.map(f => `"${f}"`).join(' ');
+      }
+      
+      // 获取已暂存的更改
+      let diff = execSync(cmd, { encoding: 'utf-8' });
       
       if (!diff.trim()) {
         // 如果没有已暂存的更改，尝试获取未暂存的更改
-        return execSync('git diff --name-status', { encoding: 'utf-8' });
+        cmd = baseCmd;
+        if (files && files.length > 0) {
+          cmd += ' -- ' + files.map(f => `"${f}"`).join(' ');
+        }
+        diff = execSync(cmd, { encoding: 'utf-8' });
       }
       
       return diff;
@@ -41,7 +54,7 @@ export class GitUtils {
   /**
    * 获取详细的文件差异内容
    */
-  static getDetailedDiff(language: 'zh' | 'en' = 'zh'): string {
+  static getDetailedDiff(language: 'zh' | 'en' = 'zh', files?: string[]): string {
     const messages = {
       zh: {
         errorLog: '获取详细Git差异失败:',
@@ -56,15 +69,29 @@ export class GitUtils {
     const msg = messages[language];
     
     try {
+      // 构建命令，支持指定文件
+      const cachedCmd = 'git diff --cached';
+      const unstagedCmd = 'git diff';
+      
+      let cmd = cachedCmd;
+      if (files && files.length > 0) {
+        cmd += ' -- ' + files.map(f => `"${f}"`).join(' ');
+      }
+      
       // 尝试获取已暂存的更改
-      const stagedDiff = execSync('git diff --cached', { encoding: 'utf-8' });
+      const stagedDiff = execSync(cmd, { encoding: 'utf-8' });
       
       if (stagedDiff.trim()) {
         return stagedDiff;
       }
       
       // 如果没有已暂存的更改，获取未暂存的更改
-      return execSync('git diff', { encoding: 'utf-8' });
+      cmd = unstagedCmd;
+      if (files && files.length > 0) {
+        cmd += ' -- ' + files.map(f => `"${f}"`).join(' ');
+      }
+      
+      return execSync(cmd, { encoding: 'utf-8' });
     } catch (error) {
       console.error(msg.errorLog, error instanceof Error ? error.message : String(error));
       throw new Error(msg.errorMessage);
@@ -115,25 +142,56 @@ export class GitUtils {
   /**
    * 执行Git提交
    */
-  static commit(message: string, language: 'zh' | 'en' = 'zh'): void {
+  static commit(message: string, language: 'zh' | 'en' = 'zh', files?: string[]): void {
     const messages = {
       zh: {
         success: '✅ 提交成功！',
         errorLog: 'Git提交失败:',
-        errorMessage: 'Git提交失败'
+        errorMessage: 'Git提交失败',
+        stagingFiles: '🔄 正在暂存修改的文件...'
       },
       en: {
         success: '✅ Commit successful!',
         errorLog: 'Git commit failed:',
-        errorMessage: 'Git commit failed'
+        errorMessage: 'Git commit failed',
+        stagingFiles: '🔄 Staging modified files...'
       }
     };
 
     const msg = messages[language];
     
     try {
-      execSync(`git commit -m "${message.replace(/"/g, '\\"')}"`, { encoding: 'utf-8' });
-      console.log(msg.success);
+      // 使用临时文件处理多行提交信息
+      const { writeFileSync, unlinkSync, tmpdir } = require('fs');
+      const path = require('path');
+      const tempFilePath = path.join(tmpdir(), `commit_msg_${Date.now()}.txt`);
+      
+      try {
+        // 暂存文件
+        console.log(msg.stagingFiles);
+        if (files && files.length > 0) {
+          // 只暂存指定的文件
+          const addCmd = `git add ${files.map(f => `"${f}"`).join(' ')}`;
+          execSync(addCmd, { encoding: 'utf-8' });
+        } else {
+          // 暂存所有修改的跟踪文件
+          execSync('git add -u', { encoding: 'utf-8' });
+        }
+        
+        // 写入提交信息到临时文件
+        writeFileSync(tempFilePath, message, { encoding: 'utf-8' });
+        
+        // 使用-F选项从文件读取提交信息
+        execSync(`git commit -F "${tempFilePath}"`, { encoding: 'utf-8' });
+        console.log(msg.success);
+      } finally {
+        // 确保删除临时文件
+        try {
+          unlinkSync(tempFilePath);
+        } catch (e) {
+          // 忽略删除临时文件的错误
+        }
+      }
     } catch (error) {
       console.error(msg.errorLog, error instanceof Error ? error.message : String(error));
       throw new Error(msg.errorMessage);

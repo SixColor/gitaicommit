@@ -20,7 +20,7 @@ export class GitAICommit {
   /**
    * 生成并提交Git提交信息
    */
-  async generateAndCommit(autoCommit: boolean = false, checkIssues: boolean = false): Promise<string> {
+  async generateAndCommit(autoCommit: boolean = false, checkIssues: boolean = false, files?: string[]): Promise<string> {
     // 创建交互式命令行接口
     const rl = readline.createInterface({
       input: process.stdin,
@@ -81,14 +81,18 @@ export class GitAICommit {
 
     // 获取Git差异
     console.log(msg.getDiff);
-    const diff = GitUtils.getDetailedDiff(this.config.language);
+    // 显示指定文件信息
+    if (files && files.length > 0) {
+      console.log(`🔍 正在分析指定的文件: ${files.join(', ')}`);
+    }
+    const diff = GitUtils.getDetailedDiff(this.config.language, files);
     
     if (!diff.trim()) {
       throw new Error(msg.noChanges);
     }
 
     // 解析差异信息
-    const parsedDiff = GitUtils.parseDiff(GitUtils.getDiff(this.config.language), this.config.language);
+    const parsedDiff = GitUtils.parseDiff(GitUtils.getDiff(this.config.language, files), this.config.language);
     console.log(`📄 ${parsedDiff.summary}`);
 
     // 生成提交信息
@@ -99,7 +103,7 @@ export class GitAICommit {
       // 如果需要检查代码问题
       if (checkIssues) {
         console.log(msg.checkIssues || `🔍 使用 ${this.config.model} 模型检查代码问题...`);
-        await this.checkCodeIssues();
+        await this.checkCodeIssues(files);
         // 添加明显的分隔符，区分问题分析和提交信息
         console.log('\n==================================================');
         console.log('                    提交信息                      ');
@@ -137,7 +141,7 @@ export class GitAICommit {
 
       // 提交 - 当用户确认提交(shouldCommit=true)时，无论autoCommit参数如何都执行提交
       if (shouldCommit) {
-        GitUtils.commit(commitMessage, this.config.language);
+        GitUtils.commit(commitMessage, this.config.language, files);
         // 注意：GitUtils.commit内部已经有成功消息输出，这里不再重复输出
       }
 
@@ -163,7 +167,7 @@ export class GitAICommit {
   /**
    * 检查代码中的潜在问题
    */
-  async checkCodeIssues(): Promise<string> {
+  async checkCodeIssues(files?: string[]): Promise<string> {
     // 多语言消息对象
     const messages = {
       zh: {
@@ -194,7 +198,7 @@ export class GitAICommit {
 
     // 获取Git差异
     // 注意：这里不再输出日志，因为在generateAndCommit中已经输出了
-    const diff = GitUtils.getDetailedDiff(this.config.language);
+    const diff = GitUtils.getDetailedDiff(this.config.language, files);
     
     if (!diff.trim()) {
       throw new Error(msg.noChanges);

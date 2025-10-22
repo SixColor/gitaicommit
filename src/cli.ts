@@ -57,10 +57,11 @@ program
   .description('生成提交信息')
   .option('-c, --commit', '自动执行git commit')
   .option('-i, --check-issues', '同时检查并显示代码潜在问题')
-  .action(async (options) => {
+  .argument('[files...]', '指定要分析的文件路径')
+  .action(async (files, options) => {
     try {
       const gitAICommit = new GitAICommit();
-      await gitAICommit.generateAndCommit(options.commit, options.checkIssues);
+      await gitAICommit.generateAndCommit(options.commit, options.checkIssues, files);
     } catch (error) {
       const currentLanguage = ConfigManager.readConfig().language;
       const errorMsg = currentLanguage === 'zh' ? '❌ 操作失败:' : '❌ Operation failed:';
@@ -75,10 +76,11 @@ program
   .alias('c')
   .description('生成并提交信息')
   .option('-i, --check-issues', '同时检查并显示代码潜在问题')
-  .action(async (options) => {
+  .argument('[files...]', '指定要分析的文件路径')
+  .action(async (files, options) => {
     try {
       const gitAICommit = new GitAICommit();
-      await gitAICommit.generateAndCommit(true, options.checkIssues);
+      await gitAICommit.generateAndCommit(true, options.checkIssues, files);
     } catch (error) {
       const currentLanguage = ConfigManager.readConfig().language;
       const errorMsg = currentLanguage === 'zh' ? '❌ 操作失败:' : '❌ Operation failed:';
@@ -92,10 +94,11 @@ program
   .command('check')
   .alias('i')
   .description('使用AI检查本次提交代码的潜在问题')
-  .action(async () => {
+  .argument('[files...]', '指定要分析的文件路径')
+  .action(async (files) => {
     try {
       const gitAICommit = new GitAICommit();
-      await gitAICommit.checkCodeIssues();
+      await gitAICommit.checkCodeIssues(files);
     } catch (error) {
       const currentLanguage = ConfigManager.readConfig().language;
       const errorMsg = currentLanguage === 'zh' ? '❌ 操作失败:' : '❌ Operation failed:';
@@ -106,10 +109,11 @@ program
 
 // 默认命令 (不指定命令时的行为)
 program
-  .action(async () => {
+  .argument('[files...]', '指定要分析的文件路径')
+  .action(async (files) => {
     try {
       const gitAICommit = new GitAICommit();
-      await gitAICommit.generateAndCommit(false, false);
+      await gitAICommit.generateAndCommit(false, false, files);
     } catch (error) {
       const currentLanguage = ConfigManager.readConfig().language;
       const errorMsg = currentLanguage === 'zh' ? '❌ 操作失败:' : '❌ Operation failed:';
