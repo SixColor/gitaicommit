@@ -1,6 +1,6 @@
 {
   "name": "gitaicommits",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "使用AI自动生成Git提交信息，支持DeepSeek、OpenAI和阿里云通义千问模型",
   "main": "dist/index.js",
   "bin": {
