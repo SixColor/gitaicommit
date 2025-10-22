@@ -33,14 +33,24 @@ GitAICommit 是一个智能的Git提交信息生成工具，利用AI模型自动
 - **提交时集成问题检查**：可选择在生成提交信息时同时分析代码问题
 - **支持指定文件分析和提交**：可精确控制要分析和提交的文件范围
 
-## 🚀 安装 [中文]
+## 🚀 安装与更新 [中文]
 
+### 安装
 ```bash
 # 全局安装
 npm install -g gitaicommits
 
 # 或在项目中安装
 npm install --save-dev gitaicommits
+```
+
+### 更新
+```bash
+# 更新全局安装的工具
+npm update -g gitaicommits
+
+# 更新项目中的工具
+npm update gitaicommits --save-dev
 ```
 
 ## ⚙️ 配置 [中文]
@@ -77,7 +87,9 @@ gitaicommits config --show
 
 ## 📝 使用方法 [中文]
 
-### 1. 生成提交信息（不自动提交）
+### 一、全量操作（默认所有文件）
+
+#### 1. 生成提交信息（不自动提交）
 
 在有未提交更改的Git仓库中运行：
 
@@ -87,88 +99,117 @@ gitaicommits
 
 # 或使用命令
 gitaicommits generate
+# 简写
+gitaicommits g
 ```
 
-工具会自动分析更改并生成提交信息，显示在终端中，然后需要手动复制使用。
+工具会自动分析所有更改并生成提交信息，显示在终端中，然后需要手动复制使用。
 
-### 2. 生成并自动提交
+#### 2. 生成并自动提交
 
 ```bash
 # 使用commit命令
 gitaicommits commit
+# 简写
+gitaicommits c
 
 # 或使用generate命令加参数
 gitaicommits generate --commit
+gitaicommits g -c
 ```
 
-### 3. 代码问题检查
+#### 3. 代码问题检查
 
 ```bash
-# 检查代码问题
+# 检查所有代码问题
 gitaicommits check
-
-# 或使用简写
+# 简写
 gitaicommits i
 ```
 
-### 4. 生成提交信息并检查代码问题
+#### 4. 生成提交信息并检查代码问题
 
 ```bash
 # 生成提交信息并检查代码问题
 gitaicommits generate --check-issues
-
-# 或使用简写
 gitaicommits g -i
 
 # 生成并提交，同时检查代码问题
 gitaicommits commit --check-issues
-
-# 或使用简写
 gitaicommits c -i
 ```
 
-### 5. 指定文件分析和提交
+### 二、指定文件操作
+
+#### 1. 生成指定文件的提交信息
+
+```bash
+# 只基于特定文件生成提交信息
+gitaicommits generate src/utils.ts
+gitaicommits g src/utils.ts
+
+# 生成多个文件的提交信息
+gitaicommits generate src/index.ts src/git.ts
+```
+
+#### 2. 提交指定文件的更改
 
 ```bash
 # 只分析和提交特定文件
+gitaicommits commit src/index.ts
+gitaicommits c src/index.ts
+
+# 提交多个文件的更改
 gitaicommits commit src/index.ts src/git.ts
-
-# 只分析特定文件的问题
-gitaicommits check src/cli.ts
-
-# 生成提交信息，但只基于特定文件
-gitaicommits generate src/utils.ts
-
-# 生成提交信息并检查代码问题，只针对特定文件
-gitaicommits generate --check-issues src/index.ts
-
-# 生成并提交，同时检查代码问题，只针对特定文件
-gitaicommits commit --check-issues src/models/index.ts
 ```
 
-### 6. 示例
+#### 3. 检查指定文件的代码问题
+
+```bash
+# 只分析特定文件的问题
+gitaicommits check src/cli.ts
+gitaicommits i src/cli.ts
+
+# 分析多个文件的问题
+gitaicommits check src/index.ts src/models/
+```
+
+#### 4. 生成提交信息并检查指定文件的代码问题
+
+```bash
+# 生成并检查特定文件
+gitaicommits generate --check-issues src/index.ts
+gitaicommits g -i src/index.ts
+
+# 生成、提交并检查特定文件
+gitaicommits commit --check-issues src/models/index.ts
+gitaicommits c -i src/models/index.ts
+```
+
+### 三、配置与使用示例
 
 ```bash
 # 配置OpenAI模型
 gitaicommits config --api-key sk-123456 --model openai --model-name gpt-4
 
-#配置deepseek模型
+# 配置deepseek模型
 gitaicommits config --api-key sk-123456 --model deepseek --model-name deepseek-chat
 
-# 查看配置
+# 查看当前配置
 gitaicommits config --show
 
-# 生成并提交信息
-gitaicommits commit
+# 更新到最新版本
+npm update -g gitaicommits
 
-# 生成提交信息并检查代码问题
-gitaicommits generate --check-issues
+# 常见操作示例
+# 1. 全量生成并提交
+gitaicommits c
 
-# 仅检查代码问题
-gitaicommits check
+# 2. 只分析和提交src目录中的TypeScript文件
+gitaicommits c src/**/*.ts
 
-# 只提交特定文件的更改
-gitaicommits commit src/index.ts src/git.ts
+# 3. 检查特定文件的代码问题
+gitaicommits i src/cli.ts
 ```
 
 ## 🛠️ 模型支持 [中文]
@@ -234,14 +275,24 @@ GitAICommit is an intelligent Git commit message generator that automatically an
 - **Automatic code issue identification**: Analyze potential issues in code changes
 - **Integrated issue checking during commit**: Option to analyze code issues while generating commit messages
 
-## 🚀 Installation [English]
+## 🚀 Installation and Update [English]
 
+### Installation
 ```bash
 # Global installation
 npm install -g gitaicommits
 
 # Or install in project
 npm install --save-dev gitaicommits
+```
+
+### Update
+```bash
+# Update globally installed tool
+npm update -g gitaicommits
+
+# Update project tool
+npm update gitaicommits --save-dev
 ```
 
 ## ⚙️ Configuration [English]
@@ -290,7 +341,9 @@ gitaicommits config --show
 
 ## 📝 Usage [English]
 
-### 1. Generate commit message (without auto commit)
+### I. Full Repository Operations (Default - All Files)
+
+#### 1. Generate commit message (without auto commit)
 
 Run in a Git repository with uncommitted changes:
 
@@ -300,66 +353,94 @@ gitaicommits
 
 # Or use command
 gitaicommits generate
+# Shorthand
+gitaicommits g
 ```
 
-The tool will automatically analyze changes and generate a commit message, displaying it in the terminal for manual copying.
+The tool will automatically analyze all changes and generate a commit message, displaying it in the terminal for manual copying.
 
-### 2. Generate and automatically commit
+#### 2. Generate and automatically commit
 
 ```bash
 # Use commit command
 gitaicommits commit
+# Shorthand
+gitaicommits c
 
 # Or use generate command with parameter
 gitaicommits generate --commit
+gitaicommits g -c
 ```
 
-### 3. Check code issues
+#### 3. Check code issues
 
 ```bash
-# Check code issues
+# Check all code issues
 gitaicommits check
-
-# Or use shorthand
+# Shorthand
 gitaicommits i
 ```
 
-### 4. Generate commit message and check code issues
+#### 4. Generate commit message and check code issues
 
 ```bash
 # Generate commit message and check code issues
 gitaicommits generate --check-issues
-
-# Or use shorthand
 gitaicommits g -i
 
 # Generate, commit, and check code issues
 gitaicommits commit --check-issues
-
-# Or use shorthand
 gitaicommits c -i
 ```
 
-### 5. Analyze and Commit Specific Files
+### II. Specific File Operations
+
+#### 1. Generate commit message for specific files
 
 ```bash
-# Only analyze and commit specific files
-gitaicommits commit src/index.ts src/git.ts
-
-# Only analyze issues in specific files
-gitaicommits check src/cli.ts
-
-# Generate commit message based only on specific files
+# Generate commit message based only on specific file
 gitaicommits generate src/utils.ts
+gitaicommits g src/utils.ts
 
-# Generate commit message and check code issues for specific files
-gitaicommits generate --check-issues src/index.ts
-
-# Generate, commit, and check code issues for specific files
-gitaicommits commit --check-issues src/models/index.ts
+# Generate commit message for multiple files
+gitaicommits generate src/index.ts src/git.ts
 ```
 
-### 6. Examples
+#### 2. Commit changes in specific files
+
+```bash
+# Only analyze and commit specific file
+gitaicommits commit src/index.ts
+gitaicommits c src/index.ts
+
+# Commit changes in multiple files
+gitaicommits commit src/index.ts src/git.ts
+```
+
+#### 3. Check code issues in specific files
+
+```bash
+# Only analyze issues in specific file
+gitaicommits check src/cli.ts
+gitaicommits i src/cli.ts
+
+# Analyze issues in multiple files
+gitaicommits check src/index.ts src/models/
+```
+
+#### 4. Generate commit message and check code issues for specific files
+
+```bash
+# Generate and check specific file
+gitaicommits generate --check-issues src/index.ts
+gitaicommits g -i src/index.ts
+
+# Generate, commit, and check specific file
+gitaicommits commit --check-issues src/models/index.ts
+gitaicommits c -i src/models/index.ts
+```
+
+### III. Configuration and Usage Examples
 
 ```bash
 # Configure OpenAI model
@@ -368,20 +449,21 @@ gitaicommits config --api-key sk-123456 --model openai --model-name gpt-4
 # Configure DeepSeek model
 gitaicommits config --api-key sk-123456 --model deepseek --model-name deepseek-chat
 
-# View configuration
+# View current configuration
 gitaicommits config --show
 
-# Generate and commit message
-gitaicommits commit
+# Update to latest version
+npm update -g gitaicommits
 
-# Generate commit message and check code issues
-gitaicommits generate --check-issues
+# Common operation examples
+# 1. Generate and commit all changes
+gitaicommits c
 
-# Only check code issues
-gitaicommits check
+# 2. Only analyze and commit TypeScript files in src directory
+gitaicommits c src/**/*.ts
 
-# Only commit changes in specific files
-gitaicommits commit src/index.ts src/git.ts
+# 3. Check code issues in specific file
+gitaicommits i src/cli.ts
 ```
 
 ## 🛠️ Model Support [English]
