@@ -132,6 +132,9 @@ gitaicommits c -i
 # 配置OpenAI模型
 gitaicommits config --api-key sk-123456 --model openai --model-name gpt-4
 
+#配置deepseek模型
+gitaicommits config --api-key sk-123456 --model deepseek --model-name deepseek-chat
+
 # 查看配置
 gitaicommits config --show
 
@@ -154,7 +157,7 @@ gitaicommits check
 
 ### DeepSeek
 
-- 支持模型：deepseek-coder 等
+- 支持模型：deepseek-chat 等
 - API端点：https://api.deepseek.com/chat/completions
 
 ### 阿里云通义千问

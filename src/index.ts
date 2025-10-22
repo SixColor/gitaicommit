@@ -135,10 +135,10 @@ export class GitAICommit {
         }
       }
 
-      // 提交
-      if (autoCommit && shouldCommit) {
+      // 提交 - 当用户确认提交(shouldCommit=true)时，无论autoCommit参数如何都执行提交
+      if (shouldCommit) {
         GitUtils.commit(commitMessage, this.config.language);
-        console.log(msg.commitSuccess);
+        // 注意：GitUtils.commit内部已经有成功消息输出，这里不再重复输出
       }
 
       return commitMessage;
