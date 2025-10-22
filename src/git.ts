@@ -164,7 +164,8 @@ export class GitUtils {
     
     try {
       // 使用临时文件处理多行提交信息
-      const { writeFileSync, unlinkSync, tmpdir } = require('fs');
+      const { writeFileSync, unlinkSync } = require('fs');
+      const { tmpdir } = require('os');
       const path = require('path');
       const tempFilePath = path.join(tmpdir(), `commit_msg_${Date.now()}.txt`);
       
