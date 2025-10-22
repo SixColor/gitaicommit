@@ -148,13 +148,15 @@ export class GitUtils {
         success: '✅ 提交成功！',
         errorLog: 'Git提交失败:',
         errorMessage: 'Git提交失败',
-        stagingFiles: '🔄 正在暂存修改的文件...'
+        stagingFiles: '🔄 正在暂存修改的文件...',
+        checkingChanges: '🔍 检查文件变更状态...'
       },
       en: {
         success: '✅ Commit successful!',
         errorLog: 'Git commit failed:',
         errorMessage: 'Git commit failed',
-        stagingFiles: '🔄 Staging modified files...'
+        stagingFiles: '🔄 Staging modified files...',
+        checkingChanges: '🔍 Checking file change status...'
       }
     };
 
@@ -167,6 +169,8 @@ export class GitUtils {
       const tempFilePath = path.join(tmpdir(), `commit_msg_${Date.now()}.txt`);
       
       try {
+        console.log(msg.checkingChanges);
+        
         // 暂存文件
         console.log(msg.stagingFiles);
         if (files && files.length > 0) {
@@ -174,15 +178,29 @@ export class GitUtils {
           const addCmd = `git add ${files.map(f => `"${f}"`).join(' ')}`;
           execSync(addCmd, { encoding: 'utf-8' });
         } else {
-          // 暂存所有修改的跟踪文件
+          // 先使用git add -u暂存所有修改的跟踪文件
           execSync('git add -u', { encoding: 'utf-8' });
+          
+          // 尝试添加任何未跟踪的新文件（可选）
+          try {
+            // 只添加已经被修改或新增的文件，不添加删除的文件
+            const untrackedFiles = execSync('git ls-files --others --exclude-standard', { encoding: 'utf-8' })
+              .split('\n')
+              .filter(file => file.trim() !== '');
+              
+            if (untrackedFiles.length > 0) {
+              execSync(`git add ${untrackedFiles.map(f => `"${f}"`).join(' ')}`, { encoding: 'utf-8' });
+            }
+          } catch (addError) {
+            // 忽略添加未跟踪文件的错误，继续执行
+          }
         }
         
         // 写入提交信息到临时文件
         writeFileSync(tempFilePath, message, { encoding: 'utf-8' });
         
-        // 使用-F选项从文件读取提交信息
-        execSync(`git commit -F "${tempFilePath}"`, { encoding: 'utf-8' });
+        // 使用-F选项从文件读取提交信息，添加--no-edit避免打开编辑器
+        execSync(`git commit -F "${tempFilePath}" --no-edit`, { encoding: 'utf-8' });
         console.log(msg.success);
       } finally {
         // 确保删除临时文件
